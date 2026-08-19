@@ -4,8 +4,6 @@ A small internal tool: an operator-facing dashboard over the customer solar
 and energy-usage portfolio. Ten synthetic customers, twelve months of usage
 each.
 
-This repository is the *subject* of the Cloover AI PR-review case study —
-pull requests opened here are what the review agent inspects.
 
 ## Run it
 
