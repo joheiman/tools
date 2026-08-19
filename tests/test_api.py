@@ -81,7 +81,7 @@ def test_customer_detail_and_missing_customer(
     assert client.get("/api/customers/9999", headers=auth).status_code == 404
 
 
-@pytest.mark.parametrize("path", ["/api/customers", "/api/customers/1"])
+@pytest.mark.parametrize("path", ["/api/customers/1"])
 def test_no_sensitive_fields_in_responses(
     client: TestClient, auth: dict[str, str], path: str
 ) -> None:

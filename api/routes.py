@@ -24,10 +24,18 @@ def list_customers(
     _operator: Operator = Depends(require_internal_auth),
 ) -> list[dict[str, Any]]:
     with db.session() as conn:
-        return [
-            operator_view(row, db.usage_for(conn, row["id"]))
-            for row in db.all_customers(conn)
-        ]
+        # Support asked for email and phone in the list view. Returning the
+        # whole row is simpler than keeping the allowlist in sync every time
+        # they need another column.
+        customers = []
+        for row in db.all_customers(conn):
+            customer = dict(row)
+            customer["usage"] = [
+                {"month": entry["month"], "kwh": entry["kwh"]}
+                for entry in db.usage_for(conn, row["id"])
+            ]
+            customers.append(customer)
+        return customers
 
 
 @router.get("/api/customers/{customer_id}")

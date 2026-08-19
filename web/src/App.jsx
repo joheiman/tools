@@ -48,6 +48,7 @@ export default function App() {
               <th>Customer</th>
               <th>Address</th>
               <th>City</th>
+              <th>Contact</th>
               <th className="numeric">Solar kWp</th>
               <th>Tariff</th>
               <th className="numeric">
@@ -66,6 +67,10 @@ export default function App() {
                   <span className="postcode">{customer.postcode}</span>
                 </td>
                 <td>{customer.city}</td>
+                <td>
+                  {customer.email}
+                  <span className="postcode">{customer.phone}</span>
+                </td>
                 <td className="numeric">
                   {customer.solar_kwp ? customer.solar_kwp.toFixed(1) : '—'}
                 </td>
