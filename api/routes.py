@@ -20,9 +20,7 @@ def health() -> dict[str, str]:
 
 
 @router.get("/api/customers")
-def list_customers(
-    _operator: Operator = Depends(require_internal_auth),
-) -> list[dict[str, Any]]:
+def list_customers() -> list[dict[str, Any]]:
     with db.session() as conn:
         return [
             operator_view(row, db.usage_for(conn, row["id"]))
