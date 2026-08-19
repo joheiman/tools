@@ -6,6 +6,11 @@
   --muted: #9aa3b2;
   --accent: #4ade80;
 
+  /* Data ink. One series, so a single sequential hue plus a de-emphasis
+     gray; validated for contrast against --surface in dark mode. */
+  --viz-accent: #3987e5;
+  --viz-previous: #898781;
+
   color-scheme: dark;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 15px;
@@ -46,6 +51,74 @@ h1 {
 
 .state.error {
   color: #f87171;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.tile__label {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* Proportional figures: a standalone display number, not a column. */
+.tile__value {
+  margin: 6px 0 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.tile__unit {
+  margin-left: 6px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.sparkline {
+  display: block;
+  margin-top: 10px;
+  overflow: visible;
+}
+
+td .sparkline {
+  margin-top: 0;
+}
+
+.sparkline__previous,
+.sparkline__current {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sparkline__previous {
+  stroke: var(--viz-previous);
+}
+
+.sparkline__current {
+  stroke: var(--viz-accent);
+}
+
+.sparkline__marker {
+  fill: var(--viz-accent);
+  stroke: var(--surface);
+  stroke-width: 2;
 }
 
 table {
