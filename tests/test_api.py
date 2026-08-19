@@ -81,7 +81,29 @@ def test_customer_detail_and_missing_customer(
     assert client.get("/api/customers/9999", headers=auth).status_code == 404
 
 
-@pytest.mark.parametrize("path", ["/api/customers", "/api/customers/1"])
+def test_portfolio_summary_requires_a_token(client: TestClient) -> None:
+    assert client.get("/api/portfolio/summary").status_code == 401
+
+
+def test_portfolio_summary_aggregates_the_portfolio(
+    client: TestClient, auth: dict[str, str]
+) -> None:
+    summary = client.get("/api/portfolio/summary", headers=auth).json()
+
+    expected_kwh = sum(
+        sum(customer["usage_kwh"]) for customer in SEED["customers"]
+    )
+    expected_solar = sum(customer["solar_kwp"] for customer in SEED["customers"])
+
+    assert summary["customer_count"] == 10
+    assert summary["total_kwh_12m"] == pytest.approx(expected_kwh)
+    assert summary["total_solar_kwp"] == pytest.approx(round(expected_solar, 1))
+    assert [entry["month"] for entry in summary["monthly_totals"]] == SEED["_months"]
+
+
+@pytest.mark.parametrize(
+    "path", ["/api/customers", "/api/customers/1", "/api/portfolio/summary"]
+)
 def test_no_sensitive_fields_in_responses(
     client: TestClient, auth: dict[str, str], path: str
 ) -> None:

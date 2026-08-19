@@ -126,3 +126,24 @@ def usage_for(conn: sqlite3.Connection, customer_id: int) -> list[sqlite3.Row]:
         "SELECT month, kwh FROM usage_monthly WHERE customer_id = ? ORDER BY month",
         (customer_id,),
     ).fetchall()
+
+
+def portfolio_totals(conn: sqlite3.Connection) -> sqlite3.Row:
+    return conn.execute(
+        """
+        SELECT COUNT(*)                  AS customer_count,
+               COALESCE(SUM(solar_kwp), 0) AS total_solar_kwp
+        FROM customers
+        """
+    ).fetchone()
+
+
+def portfolio_monthly_totals(conn: sqlite3.Connection) -> list[sqlite3.Row]:
+    return conn.execute(
+        """
+        SELECT month, SUM(kwh) AS kwh
+        FROM usage_monthly
+        GROUP BY month
+        ORDER BY month
+        """
+    ).fetchall()

@@ -30,6 +30,29 @@ def list_customers(
         ]
 
 
+@router.get("/api/portfolio/summary")
+def portfolio_summary(
+    _operator: Operator = Depends(require_internal_auth),
+) -> dict[str, Any]:
+    """Headline figures for the dashboard.
+
+    Aggregates only. No customer is identifiable in this response, so there is
+    no per-customer row to project through ``operator_view`` — but the route
+    still requires an authenticated operator, like everything else here.
+    """
+    with db.session() as conn:
+        totals = db.portfolio_totals(conn)
+        monthly = db.portfolio_monthly_totals(conn)
+        return {
+            "customer_count": totals["customer_count"],
+            "total_solar_kwp": round(totals["total_solar_kwp"], 1),
+            "total_kwh_12m": round(sum(row["kwh"] for row in monthly), 1),
+            "monthly_totals": [
+                {"month": row["month"], "kwh": row["kwh"]} for row in monthly
+            ],
+        }
+
+
 @router.get("/api/customers/{customer_id}")
 def get_customer(
     customer_id: int,
