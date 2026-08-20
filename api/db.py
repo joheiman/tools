@@ -111,8 +111,20 @@ def _seed(conn: sqlite3.Connection) -> None:
         )
 
 
-def all_customers(conn: sqlite3.Connection) -> list[sqlite3.Row]:
-    return conn.execute("SELECT * FROM customers ORDER BY id").fetchall()
+def all_customers(
+    conn: sqlite3.Connection, city: str | None = None
+) -> list[sqlite3.Row]:
+    """Every customer, optionally narrowed to one city.
+
+    ``city`` reaches this function straight from a query string, so it is
+    bound as a parameter rather than formatted into the SQL.
+    """
+    if city is None:
+        return conn.execute("SELECT * FROM customers ORDER BY id").fetchall()
+    return conn.execute(
+        "SELECT * FROM customers WHERE city = ? COLLATE NOCASE ORDER BY id",
+        (city,),
+    ).fetchall()
 
 
 def customer_by_id(conn: sqlite3.Connection, customer_id: int) -> sqlite3.Row | None:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from . import db
 from .auth import Operator, require_internal_auth
@@ -21,12 +21,18 @@ def health() -> dict[str, str]:
 
 @router.get("/api/customers")
 def list_customers(
+    city: str | None = Query(default=None, max_length=80),
     _operator: Operator = Depends(require_internal_auth),
 ) -> list[dict[str, Any]]:
+    """The operator list view, optionally filtered to a single city.
+
+    The filter narrows which rows are returned. It does not change which
+    columns are returned: every row still goes through ``operator_view``.
+    """
     with db.session() as conn:
         return [
             operator_view(row, db.usage_for(conn, row["id"]))
-            for row in db.all_customers(conn)
+            for row in db.all_customers(conn, city=city)
         ]
 
 

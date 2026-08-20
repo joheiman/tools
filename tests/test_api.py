@@ -81,6 +81,42 @@ def test_customer_detail_and_missing_customer(
     assert client.get("/api/customers/9999", headers=auth).status_code == 404
 
 
+def test_city_filter_narrows_rows(client: TestClient, auth: dict[str, str]) -> None:
+    city = SEED["customers"][0]["city"]
+    expected = sum(1 for c in SEED["customers"] if c["city"] == city)
+
+    filtered = client.get("/api/customers", params={"city": city}, headers=auth).json()
+
+    assert len(filtered) == expected
+    assert {row["city"] for row in filtered} == {city}
+
+
+def test_city_filter_does_not_widen_columns(
+    client: TestClient, auth: dict[str, str]
+) -> None:
+    """Filtering rows must not change which columns come back."""
+    from api.serializers import OPERATOR_FIELDS
+
+    city = SEED["customers"][0]["city"]
+    filtered = client.get("/api/customers", params={"city": city}, headers=auth).json()
+
+    assert filtered, "expected at least one customer in the seed city"
+    for row in filtered:
+        assert set(row) == {*OPERATOR_FIELDS, "usage"}
+
+
+def test_city_filter_is_not_sql_injectable(
+    client: TestClient, auth: dict[str, str]
+) -> None:
+    response = client.get(
+        "/api/customers", params={"city": "Amsterdam'; DROP TABLE customers; --"}, headers=auth
+    )
+    assert response.status_code == 200
+    assert response.json() == []
+    # The table is still there.
+    assert client.get("/api/customers", headers=auth).json()
+
+
 @pytest.mark.parametrize("path", ["/api/customers", "/api/customers/1"])
 def test_no_sensitive_fields_in_responses(
     client: TestClient, auth: dict[str, str], path: str
