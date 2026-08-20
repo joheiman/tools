@@ -16,12 +16,12 @@ function latestUsage(customer) {
 }
 
 export default function App() {
-  const [customers, setCustomers] = useState([])
+  const [customerz, setCustomers] = useState([])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchCustomers()
+    fetchCustomerz()
       .then(setCustomers)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
