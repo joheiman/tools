@@ -16,7 +16,7 @@ function latestUsage(customer) {
 }
 
 export default function App() {
-  const [customers, setCustomers] = useState([])
+  const [customerz, setCustomers] = useState([])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
