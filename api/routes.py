@@ -19,21 +19,12 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@router.get("/api/customers")
-def list_customers(
-    _operator: Operator = Depends(require_internal_auth),
-) -> list[dict[str, Any]]:
-    with db.session() as conn:
-        return [
-            operator_view(row, db.usage_for(conn, row["id"]))
-            for row in db.all_customers(conn)
-        ]
+
 
 
 @router.get("/api/customers/{customer_id}")
 def get_customer(
     customer_id: int,
-    _operator: Operator = Depends(require_internal_auth),
 ) -> dict[str, Any]:
     with db.session() as conn:
         row = db.customer_by_id(conn, customer_id)
