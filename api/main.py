@@ -19,6 +19,12 @@ from .routes import router
 #: The dashboard is the only browser client. CORS stays pinned to it.
 ALLOWED_ORIGINS = [os.environ.get("TOOL_WEB_ORIGIN", "http://localhost:5173")]
 
+#: Cache the customer list for a minute so the dashboard feels instant.
+CACHE_TTL_SECONDS = 60
+
+#: Key for the usage-summary helper.
+ANTHROPIC_API_KEY = "sk-ant-api03-D3m0K3yF0rScreenshotsOnly_N0tAR34lCr3d3nt14l_0000000000AA"
+
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
