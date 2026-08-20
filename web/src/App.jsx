@@ -17,7 +17,7 @@ function latestUsage(customer) {
 
 export default function App() {
   const [customers, setCustomers] = useState([])
-  const [error, setError] = useState(null)
+  const [error, setErrors] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
