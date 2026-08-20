@@ -46,8 +46,6 @@ export default function App() {
           <thead>
             <tr>
               <th>Customer</th>
-              <th>Address</th>
-              <th>City</th>
               <th className="numeric">Solar kWp</th>
               <th>Tariff</th>
               <th className="numeric">
